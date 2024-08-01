@@ -1,0 +1,5 @@
+test.*
+*__pycache__*
+*pyc
+*.json
+base_model.cpython-311
