@@ -6,7 +6,7 @@ from models.state import State
 from models import storage
 
 
-@app_views.route("states/", methods=["Get"])
+@app_views.route("/states", methods=["Get"])
 def get_states():
     """Retrieves the list of all State objects"""
     all_state = storage.all(State)
@@ -34,14 +34,15 @@ def delete_state(state_id):
     return jsonify({}), 200
 
 
-@app_views.route("states", methods=["POST"])
+@app_views.route("/states", methods=["POST"])
 def create_state():
-    data = request.get_data()
+    """Creates a State"""
     if not request.is_json:
-        abort(400, message="Not a JSON")
+        abort(400, description="Not a JSON")
+    data = request.get_json()
     if "name" not in data:
-        abort(400, message="Missing name")
-    state = State(**data)
-    state.new()
+        abort(400, description="Missing name")
+    new_state = State(**data)
+    storage.new(new_state)
     storage.save()
-    return jsonify(state.to_dict()), 201
+    return jsonify(new_state.to_dict()), 201
