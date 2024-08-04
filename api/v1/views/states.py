@@ -1,31 +1,31 @@
 #!/usr/bin/python3
-"""defines a route for an API endpoint"""
+"""View for State objects that handles default RESTful API actions"""
+
+from flask import jsonify, request, abort
 from api.v1.views import app_views
-from flask import jsonify, abort, request
-from models.state import State
 from models import storage
+from models.state import State
 
 
-@app_views.route("/states", methods=["Get"])
+@app_views.route("/states", methods=["GET"])
 def get_states():
     """Retrieves the list of all State objects"""
-    all_state = storage.all(State)
-    states_list = [state.to_dict() for state in all_state.values()]
-    return jsonify(states_list)
+    states = storage.all(State).values()
+    return jsonify([state.to_dict() for state in states])
 
 
-@app_views.route("states/<state_id>", methods=["GET"])
+@app_views.route("/states/<state_id>", methods=["GET"])
 def get_state(state_id):
-    """Retrieves a state object by it's Id"""
+    """Retrieves a State object"""
     state = storage.get(State, state_id)
     if not state:
         abort(404)
     return jsonify(state.to_dict())
 
 
-@app_views.route("states/<state_id>", methods=["DELETE"])
+@app_views.route("/states/<state_id>", methods=["DELETE"])
 def delete_state(state_id):
-    """Deletes a state object by it's Id"""
+    """Deletes a State object"""
     state = storage.get(State, state_id)
     if not state:
         abort(404)
@@ -48,16 +48,18 @@ def create_state():
     return jsonify(new_state.to_dict()), 201
 
 
-@app_views.route("states/<state_id>", methods=["PUT"])
+@app_views.route("/states/<state_id>", methods=["PUT"])
 def update_state(state_id):
-    """update a State"""
+    """Updates a State object"""
     state = storage.get(State, state_id)
+    if not state:
+        abort(404)
     if not request.is_json:
         abort(400, description="Not a JSON")
     data = request.get_json()
-    ignored = ["id", "created_at", "updated_at"]
-    update_dict = {k: v for k, v in data.items() if k not in ignored}
-    for k, v in update_dict.items():
-        setattr(state, k, v)
+    ignore_keys = ["id", "created_at", "updated_at"]
+    for key, value in data.items():
+        if key not in ignore_keys:
+            setattr(state, key, value)
     storage.save()
     return jsonify(state.to_dict()), 200
