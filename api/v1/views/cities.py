@@ -47,11 +47,11 @@ def create_city(state_id):
     data = request.get_json()
     if "name" not in data:
         abort(400, description="Missing name")
+    data.update({"state_id": state_id})
     new_city = City(**data)
-    new_city.state_id = state_id
     storage.new(new_city)
     storage.save()
-    return jsonify(new_city.to_dict())
+    return jsonify(new_city.to_dict()), 201
 
 
 def update_city(city_id):
