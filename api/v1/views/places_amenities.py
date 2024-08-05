@@ -9,10 +9,10 @@ from models.user import User
 from models import storage
 
 
-@app_views.route("/cities/<city_id>/places", methods=["GET"])
-def get_city_places(city_id):
-    """Retrieves all places in the city"""
-    city = storage.get(City, city_id)
-    if not city:
-        abort(404)
-    return jsonify([place.to_dict() for place in city.places])
+# @app_views.route("/cities/<city_id>/places", methods=["GET"])
+# def get_city_places(city_id):
+#     """Retrieves all places in the city"""
+#     city = storage.get(City, city_id)
+#     if not city:
+#         abort(404)
+#     return jsonify([place.to_dict() for place in city.places])
