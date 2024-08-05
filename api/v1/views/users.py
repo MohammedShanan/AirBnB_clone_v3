@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 """defines a route for an API endpoint"""
 
 from api.v1.views import app_views
