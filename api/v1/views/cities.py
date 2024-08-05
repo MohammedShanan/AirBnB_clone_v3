@@ -60,16 +60,12 @@ def update_city(city_id):
     city = storage.get(City, city_id)
     if not city:
         abort(404)
-
     if not request.json:
         abort(400, description="Not a JSON")
-
     data = request.get_json()
     ignore_keys = ["id", "state_id", "created_at", "updated_at"]
-
     for key, value in data.items():
         if key not in ignore_keys:
             setattr(city, key, value)
     storage.save()
-
     return jsonify(city.to_dict()), 200
