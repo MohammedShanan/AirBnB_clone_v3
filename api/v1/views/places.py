@@ -63,7 +63,7 @@ def create_city_place(city_id):
 
 @app_views.route("/places/<place_id>", methods=["PUT"])
 def update_place(place_id):
-    """Updates a Place object"""
+    """Updates a Place"""
     place = storage.get(Place, place_id)
     if not place:
         abort(404)
